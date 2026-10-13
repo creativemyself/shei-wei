@@ -33,6 +33,10 @@ tests/              單元測試
 
 ## 1. 硬體架設
 
+![硬體接線圖](docs/wiring.png)
+
+（向量版：[docs/wiring.svg](docs/wiring.svg)）
+
 | 項目 | 建議 |
 |------|------|
 | 主機 | Raspberry Pi 4/5（4GB 以上）或 Jetson Nano / Orin Nano |

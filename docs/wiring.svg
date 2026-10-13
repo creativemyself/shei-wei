@@ -1,0 +1,167 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 1020" width="1400" height="1020"
+     font-family="'PingFang TC','Noto Sans CJK TC','Microsoft JhengHei','WenQuanYi Zen Hei',sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#444"/>
+    </marker>
+    <style>
+      .panel { fill:#fafafa; stroke:#cfcfcf; stroke-width:1.5; }
+      .h2 { font-size:22px; font-weight:700; fill:#222; }
+      .t { font-size:15px; fill:#333; }
+      .s { font-size:13px; fill:#555; }
+      .w { font-size:15px; fill:#fff; font-weight:700; }
+      .ws { font-size:12px; fill:#e8f5ee; }
+      .ribbon { fill:none; stroke:#d9a441; stroke-width:14; stroke-linejoin:round; }
+      .power { fill:none; stroke:#c0392b; stroke-width:4; }
+      .net { fill:none; stroke:#2471a3; stroke-width:4; }
+      .box { fill:#fff; stroke:#888; stroke-width:1.5; }
+      .flow { fill:#fff; stroke:#2e7d5b; stroke-width:2; }
+      .arrow { stroke:#444; stroke-width:2; marker-end:url(#arrow); }
+    </style>
+  </defs>
+
+  <rect width="1400" height="1020" fill="#fff"/>
+  <text x="700" y="46" text-anchor="middle" font-size="30" font-weight="700" fill="#111">AI 庫存影像辨識系統 — 硬體接線圖</text>
+
+  <!-- 圖例 -->
+  <g transform="translate(1000,64)">
+    <line x1="0" y1="0" x2="30" y2="0" stroke="#d9a441" stroke-width="10"/><text x="38" y="5" class="s">CSI 排線</text>
+    <line x1="120" y1="0" x2="150" y2="0" class="power"/><text x="158" y="5" class="s">電源</text>
+    <line x1="210" y1="0" x2="240" y2="0" class="net"/><text x="248" y="5" class="s">網路</text>
+  </g>
+
+  <!-- ═════════ 方案 A：樹莓派 ═════════ -->
+  <rect class="panel" x="30" y="85" width="655" height="425" rx="12"/>
+  <text class="h2" x="50" y="120">方案 A：Raspberry Pi 4 / 5 + IMX219</text>
+
+  <!-- 鏡頭模組 -->
+  <rect x="60" y="160" width="130" height="130" rx="6" fill="#1f7a4d"/>
+  <circle cx="125" cy="215" r="32" fill="#222"/><circle cx="125" cy="215" r="16" fill="#3d5a80"/><circle cx="119" cy="209" r="5" fill="#9ec1e6"/>
+  <rect x="95" y="284" width="60" height="14" fill="#e9dcc0" stroke="#8a7a55"/>
+  <text class="t" x="125" y="345" text-anchor="middle" font-weight="700">IMX219 鏡頭模組</text>
+  <text class="s" x="125" y="364" text-anchor="middle">Camera Module v2</text>
+
+  <!-- 主機板 -->
+  <rect x="330" y="145" width="320" height="200" rx="10" fill="#2e8b57"/>
+  <text class="w" x="490" y="180" text-anchor="middle">Raspberry Pi 4 / 5</text>
+  <text class="ws" x="490" y="202" text-anchor="middle">microSD：Raspberry Pi OS 64-bit</text>
+  <rect x="350" y="295" width="90" height="16" fill="#e9dcc0" stroke="#8a7a55"/>
+  <text class="ws" x="395" y="287" text-anchor="middle">CAMERA (CSI)</text>
+  <rect x="455" y="333" width="34" height="18" rx="4" fill="#bbb" stroke="#555"/>
+  <text class="ws" x="472" y="326" text-anchor="middle">USB-C</text>
+  <rect x="565" y="322" width="56" height="30" fill="#ccc" stroke="#555"/>
+  <text class="ws" x="593" y="314" text-anchor="middle">乙太網路</text>
+
+  <!-- 連線 -->
+  <path class="ribbon" d="M125,298 V310 H235 V400 H395 V311"/>
+  <text class="s" x="140" y="425">CSI 排線（Pi 4：15pin；Pi 5：22→15pin 轉接排線）</text>
+  <path class="power" d="M472,351 V440"/>
+  <path class="net" d="M593,352 V440"/>
+  <rect class="box" x="385" y="440" width="175" height="56" rx="6"/>
+  <text class="t" x="472" y="463" text-anchor="middle">USB-C 電源供應器</text>
+  <text class="s" x="472" y="484" text-anchor="middle">Pi 4：5V 3A｜Pi 5：5V 5A</text>
+  <rect class="box" x="568" y="440" width="105" height="56" rx="6"/>
+  <text class="t" x="620" y="463" text-anchor="middle">路由器</text>
+  <text class="s" x="620" y="484" text-anchor="middle">或用 Wi-Fi</text>
+
+  <!-- ═════════ 方案 B：Jetson ═════════ -->
+  <rect class="panel" x="715" y="85" width="655" height="425" rx="12"/>
+  <text class="h2" x="735" y="120">方案 B：NVIDIA Jetson (Orin) Nano + IMX219</text>
+
+  <rect x="745" y="160" width="130" height="130" rx="6" fill="#1f7a4d"/>
+  <circle cx="810" cy="215" r="32" fill="#222"/><circle cx="810" cy="215" r="16" fill="#3d5a80"/><circle cx="804" cy="209" r="5" fill="#9ec1e6"/>
+  <rect x="780" y="284" width="60" height="14" fill="#e9dcc0" stroke="#8a7a55"/>
+  <text class="t" x="810" y="345" text-anchor="middle" font-weight="700">IMX219 鏡頭模組</text>
+  <text class="s" x="810" y="364" text-anchor="middle">Jetson 相容版</text>
+
+  <rect x="1015" y="145" width="320" height="200" rx="10" fill="#3a3f44"/>
+  <rect x="1115" y="160" width="120" height="70" rx="4" fill="#5b6168"/>
+  <g stroke="#3a3f44" stroke-width="3"><line x1="1125" y1="165" x2="1125" y2="225"/><line x1="1145" y1="165" x2="1145" y2="225"/><line x1="1165" y1="165" x2="1165" y2="225"/><line x1="1185" y1="165" x2="1185" y2="225"/><line x1="1205" y1="165" x2="1205" y2="225"/><line x1="1225" y1="165" x2="1225" y2="225"/></g>
+  <text class="w" x="1175" y="255" text-anchor="middle">Jetson 開發套件</text>
+  <rect x="1035" y="295" width="90" height="16" fill="#e9dcc0" stroke="#8a7a55"/>
+  <text class="ws" x="1080" y="287" text-anchor="middle">CAM0 (CSI)</text>
+  <circle cx="1157" cy="342" r="10" fill="#bbb" stroke="#555"/>
+  <text class="ws" x="1157" y="326" text-anchor="middle">DC</text>
+  <rect x="1250" y="322" width="56" height="30" fill="#ccc" stroke="#555"/>
+  <text class="ws" x="1278" y="314" text-anchor="middle">乙太網路</text>
+
+  <path class="ribbon" d="M810,298 V310 H920 V400 H1080 V311"/>
+  <text class="s" x="825" y="425">CSI 排線（Orin Nano：22pin，需 22→15pin 排線）</text>
+  <path class="power" d="M1157,352 V440"/>
+  <path class="net" d="M1278,352 V440"/>
+  <rect class="box" x="1065" y="440" width="185" height="56" rx="6"/>
+  <text class="t" x="1157" y="463" text-anchor="middle">DC 圓孔電源</text>
+  <text class="s" x="1157" y="484" text-anchor="middle">Orin Nano 19V｜Nano 5V 4A</text>
+  <rect class="box" x="1258" y="440" width="105" height="56" rx="6"/>
+  <text class="t" x="1310" y="463" text-anchor="middle">路由器</text>
+  <text class="s" x="1310" y="484" text-anchor="middle">或用 Wi-Fi</text>
+
+  <!-- ═════════ 安裝示意 ═════════ -->
+  <rect class="panel" x="30" y="535" width="655" height="460" rx="12"/>
+  <text class="h2" x="50" y="570">安裝示意（側視）</text>
+
+  <rect x="60" y="590" width="600" height="10" fill="#999"/>
+  <text class="s" x="66" y="618">天花板</text>
+  <rect x="300" y="600" width="110" height="34" rx="4" fill="#2e8b57"/>
+  <text class="ws" x="355" y="622" text-anchor="middle">主機</text>
+  <path d="M355,634 V650" stroke="#d9a441" stroke-width="8"/>
+  <rect x="337" y="650" width="36" height="22" rx="3" fill="#1f7a4d"/>
+  <path d="M355,672 L110,915 L600,915 Z" fill="#5dade2" opacity="0.18"/>
+  <path d="M355,672 L110,915 M355,672 L600,915" stroke="#5dade2" stroke-dasharray="6 5" stroke-width="1.5"/>
+  <text class="s" x="385" y="690">鏡頭朝正下方</text>
+  <path class="power" d="M410,610 H600"/><path class="net" d="M410,622 H600"/>
+  <text class="s" x="420" y="650">電源 / 網路線（可用 PoE）</text>
+
+  <line x1="60" y1="915" x2="660" y2="915" stroke="#777" stroke-width="3"/>
+  <text class="s" x="66" y="936">地板</text>
+  <g fill="#c8a165" stroke="#7a5c30" stroke-width="1.5">
+    <rect x="140" y="875" width="55" height="40"/><rect x="200" y="875" width="55" height="40"/>
+    <rect x="290" y="875" width="55" height="40"/><rect x="350" y="875" width="55" height="40"/><rect x="350" y="835" width="55" height="40"/>
+    <rect x="460" y="875" width="55" height="40"/><rect x="520" y="875" width="55" height="40"/>
+  </g>
+  <line x1="645" y1="602" x2="645" y2="912" class="arrow" marker-start="url(#arrow)"/>
+  <text class="t" x="636" y="760" text-anchor="end" font-weight="700">3～5 m</text>
+  <text class="s" x="50" y="962">● CSI 排線越短越穩定（建議 ≤ 50 cm），主機與鏡頭一起裝在天花板，</text>
+  <text class="s" x="50" y="980">　改為拉長電源線與網路線。堆疊的箱子俯拍只看得到最上層（設定 layers）。</text>
+
+  <!-- ═════════ 資料流程 ═════════ -->
+  <rect class="panel" x="715" y="535" width="655" height="460" rx="12"/>
+  <text class="h2" x="735" y="570">資料流程</text>
+
+  <rect class="flow" x="745" y="590" width="270" height="50" rx="8"/>
+  <text class="t" x="880" y="621" text-anchor="middle">IMX219 鏡頭拍攝地板</text>
+  <line class="arrow" x1="880" y1="640" x2="880" y2="668"/><text class="s" x="892" y="660">CSI</text>
+
+  <rect class="flow" x="745" y="670" width="270" height="58" rx="8" fill="#eef8f2"/>
+  <text class="t" x="880" y="694" text-anchor="middle" font-weight="700">樹莓派 / Jetson</text>
+  <text class="s" x="880" y="715" text-anchor="middle">每 60 秒：拍照 → YOLO 數箱子</text>
+  <line class="arrow" x1="880" y1="728" x2="880" y2="756"/><text class="s" x="892" y="748">網路線 / Wi-Fi</text>
+
+  <rect class="flow" x="745" y="758" width="270" height="44" rx="8"/>
+  <text class="t" x="880" y="786" text-anchor="middle">路由器 → 網際網路</text>
+  <line class="arrow" x1="880" y1="802" x2="880" y2="830"/><text class="s" x="892" y="822">HTTPS（Google Sheets API）</text>
+
+  <rect class="flow" x="745" y="832" width="270" height="58" rx="8" fill="#eef8f2"/>
+  <text class="t" x="880" y="856" text-anchor="middle" font-weight="700">Google 試算表</text>
+  <text class="s" x="880" y="877" text-anchor="middle">即時庫存（覆寫）＋ 掃描紀錄（追加）</text>
+  <line class="arrow" x1="880" y1="890" x2="880" y2="918"/>
+
+  <rect class="flow" x="745" y="920" width="270" height="44" rx="8"/>
+  <text class="t" x="880" y="948" text-anchor="middle">手機 / 電腦隨時查看</text>
+
+  <g transform="translate(1040,600)">
+    <text class="t" font-weight="700" x="0" y="0">接線注意事項</text>
+    <text class="s" x="0" y="30">1. 先斷電，再插拔 CSI 排線</text>
+    <text class="s" x="0" y="54">2. 掀起連接器卡扣 → 插入排線</text>
+    <text class="s" x="0" y="74">　→ 壓下卡扣固定</text>
+    <text class="s" x="0" y="98">3. 金屬接點方向依板上標示，</text>
+    <text class="s" x="0" y="118">　插反時鏡頭不會被偵測到</text>
+    <text class="s" x="0" y="142">4. Jetson 的 CAM0 對應</text>
+    <text class="s" x="0" y="162">　設定檔 sensor_id: 0</text>
+    <text class="s" x="0" y="186">5. 使用原廠規格電源，</text>
+    <text class="s" x="0" y="206">　電壓不足會當機或重開機</text>
+    <text class="t" font-weight="700" x="0" y="246">接好後測試鏡頭</text>
+    <text class="s" x="0" y="272" font-family="monospace">Pi：rpicam-hello -t 5000</text>
+    <text class="s" x="0" y="294" font-family="monospace">Jetson：nvgstcapture-1.0</text>
+  </g>
+</svg>
