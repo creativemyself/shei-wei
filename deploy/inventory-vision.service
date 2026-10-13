@@ -1,0 +1,24 @@
+# 開機自動啟動庫存影像辨識
+# 安裝：
+#   sudo cp deploy/inventory-vision.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now inventory-vision
+# 查看紀錄：journalctl -u inventory-vision -f
+#
+# 請依實際情況修改 User 與路徑（下方以 /home/pi/shei-wei 為例）
+[Unit]
+Description=Inventory box counting (camera -> Google Sheets)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/shei-wei
+ExecStart=/home/pi/shei-wei/.venv/bin/python -m inventory_vision -c config/config.yaml
+Restart=always
+RestartSec=10
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target

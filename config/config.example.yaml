@@ -1,0 +1,72 @@
+# 庫存影像辨識系統設定檔範例
+# 使用方式：複製成 config/config.yaml 後修改（config.yaml 已被 .gitignore 排除）
+
+# ── 攝影機 ─────────────────────────────────────────────
+camera:
+  # auto      : 自動判斷（樹莓派 → picamera2、Jetson → jetson、其他 → opencv）
+  # picamera2 : 樹莓派 + CSI IMX219（Camera Module v2）
+  # jetson    : NVIDIA Jetson + CSI IMX219（GStreamer nvarguscamerasrc）
+  # opencv    : USB 攝影機（開發用電腦測試）
+  # file      : 讀取靜態圖片（無攝影機時開發/除錯用）
+  backend: auto
+  width: 1640           # IMX219 建議 1640x1232（全視角、2x2 binning，畫質與速度平衡）
+  height: 1232
+  sensor_id: 0          # Jetson：CSI 埠編號；樹莓派 5：相機編號
+  flip_method: 0        # Jetson nvvidconv 翻轉（0=不翻、2=旋轉 180°）
+  device_index: 0       # backend=opencv 時的 /dev/videoN
+  file_path: samples/floor.jpg   # backend=file 時讀取的圖片
+  warmup_frames: 5      # 每次拍攝前丟棄的畫面數（讓自動曝光穩定、清掉舊畫面）
+
+# ── 物件偵測 ───────────────────────────────────────────
+detector:
+  # yolo    : YOLO 模型（建議，需自行訓練「箱子」類別，見 README）
+  # contour : 傳統影像處理找矩形輪廓（不需訓練，適合初期測試，準確度較低）
+  type: yolo
+  model_path: models/boxes.pt    # Jetson 可改用 TensorRT 匯出的 models/boxes.engine
+  confidence: 0.45
+  iou: 0.5
+  imgsz: 640
+  classes: null         # 只計算特定類別 id，例如 [0]；null = 全部類別
+  device: null          # null=自動；Jetson 可設 0（GPU）；樹莓派設 cpu
+  # 以下為 contour 偵測器參數（以畫面像素計）
+  min_area: 2500
+  max_area: 200000
+  min_rectangularity: 0.75
+
+# ── 計數區域（地板範圍） ────────────────────────────────
+# 用 tools/calibrate_roi.py 在畫面上點選多邊形產生座標。
+# layers：俯視時只看得到最上層，若每疊固定層數可設定倍數（實際箱數 = 偵測數 × layers）。
+# 若 zones 留空，則整個畫面視為單一區域 "全區"。
+zones:
+  - name: A區
+    layers: 1
+    polygon: [[100, 200], [800, 200], [800, 1100], [100, 1100]]
+  - name: B區
+    layers: 1
+    polygon: [[850, 200], [1550, 200], [1550, 1100], [850, 1100]]
+
+# 判斷箱子屬於哪個區域時，使用框的哪個點：center（俯拍建議）或 bottom（斜拍建議）
+zone_anchor: center
+
+# ── 排程與穩定化 ───────────────────────────────────────
+schedule:
+  interval_seconds: 60  # 每一分鐘掃描一次
+  # 取最近 N 次掃描的中位數作為回報值，避免人員/堆高機經過造成數字跳動
+  smoothing_window: 3
+
+# ── Google 試算表 ──────────────────────────────────────
+google_sheets:
+  enabled: true
+  credentials_file: credentials/service_account.json
+  spreadsheet_id: "請貼上試算表網址中 /d/ 與 /edit 之間的 ID"
+  current_worksheet: 即時庫存   # 每次掃描覆寫：區域 / 箱數 / 原始偵測數 / 更新時間
+  log_worksheet: 掃描紀錄       # 每次掃描新增一列歷史紀錄
+  log_only_on_change: false     # true = 箱數有變化才寫入歷史紀錄
+  pending_file: data/pending_rows.jsonl   # 斷網時暫存，恢復後自動補上傳
+  timezone: Asia/Taipei
+
+# ── 除錯輸出 ───────────────────────────────────────────
+debug:
+  save_annotated: true                 # 儲存最新標註結果圖（及原始畫面 latest_raw.jpg）
+  annotated_path: data/latest.jpg
+  log_level: INFO

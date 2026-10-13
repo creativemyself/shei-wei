@@ -1,0 +1,32 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "掃描一次（不寫入試算表）",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "inventory_vision",
+      "args": ["-c", "config/config.yaml", "--once", "--dry-run"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "持續監測（每分鐘更新試算表）",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "inventory_vision",
+      "args": ["-c", "config/config.yaml"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "設定地板區域 (ROI)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/tools/calibrate_roi.py",
+      "args": ["-c", "config/config.yaml"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal"
+    }
+  ]
+}
