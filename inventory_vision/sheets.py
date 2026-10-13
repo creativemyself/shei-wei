@@ -2,6 +2,9 @@
 
 斷網或 API 錯誤時，歷史紀錄會先寫入本機 JSONL 暫存檔，下次成功連線時自動補上傳，
 確保紀錄不遺失；即時庫存表則每次都以最新數字覆寫，不需補傳。
+
+每次寫入只用 3 個 API 請求（清除、覆寫、追加），多鏡頭時也是整批一次寫入，
+不會超過 Google Sheets API 每分鐘的寫入配額。
 """
 from __future__ import annotations
 
@@ -15,9 +18,19 @@ CURRENT_HEADER = ["區域", "箱數", "原始偵測數", "更新時間"]
 LOG_HEADER = ["時間", "區域", "箱數", "原始偵測數"]
 
 
+def _column_letter(n: int) -> str:
+    s = ""
+    while n:
+        n, r = divmod(n - 1, 26)
+        s = chr(65 + r) + s
+    return s
+
+
 class SheetsWriter:
-    def __init__(self, cfg: dict, client=None):
+    def __init__(self, cfg: dict, client=None, current_header=CURRENT_HEADER, log_header=LOG_HEADER):
         self.cfg = cfg
+        self.current_header = list(current_header)
+        self.log_header = list(log_header)
         self.pending_path = Path(cfg["pending_file"])
         self._client = client
         self._spreadsheet = None
@@ -34,8 +47,8 @@ class SheetsWriter:
 
             self._client = gspread.service_account(filename=self.cfg["credentials_file"])
         self._spreadsheet = self._client.open_by_key(self.cfg["spreadsheet_id"])
-        self._ws_current = self._get_or_create(self.cfg["current_worksheet"], CURRENT_HEADER)
-        self._ws_log = self._get_or_create(self.cfg["log_worksheet"], LOG_HEADER)
+        self._ws_current = self._get_or_create(self.cfg["current_worksheet"], self.current_header)
+        self._ws_log = self._get_or_create(self.cfg["log_worksheet"], self.log_header)
 
     def _get_or_create(self, title: str, header: list[str]):
         try:
@@ -68,23 +81,16 @@ class SheetsWriter:
                 f.write(json.dumps(r, ensure_ascii=False) + "\n")
 
     # ── 寫入 ────────────────────────────────────────────
-    def write(self, timestamp: str, counts: dict[str, int], raw_counts: dict[str, int]) -> bool:
-        """回傳 True 表示成功寫入雲端。"""
-        current_rows = [CURRENT_HEADER] + [
-            [name, counts[name], raw_counts.get(name, 0), timestamp] for name in counts
-        ]
-        current_rows.append(["合計", sum(counts.values()), sum(raw_counts.values()), timestamp])
-
-        log_rows = self._load_pending()
-        if not (self.cfg.get("log_only_on_change") and counts == self._last_logged):
-            log_rows += [[timestamp, name, counts[name], raw_counts.get(name, 0)] for name in counts]
-            self._last_logged = dict(counts)
-
+    def write_rows(self, current_rows: list[list], log_rows: list[list]) -> bool:
+        """覆寫即時庫存表（不含標題列）並追加歷史紀錄。回傳 True 表示成功寫入雲端。"""
+        log_rows = self._load_pending() + list(log_rows)
         try:
             self._connect()
-            # 只清除 A:D 再整批覆寫，區域增減時不會留下舊列
-            self._ws_current.batch_clear(["A:D"])
-            self._ws_current.update(values=current_rows, range_name="A1", value_input_option="USER_ENTERED")
+            # 只清除表頭寬度的欄位再整批覆寫，區域/鏡頭增減時不會留下舊列
+            self._ws_current.batch_clear([f"A:{_column_letter(len(self.current_header))}"])
+            self._ws_current.update(
+                values=[self.current_header] + current_rows, range_name="A1", value_input_option="USER_ENTERED"
+            )
             if log_rows:
                 self._ws_log.append_rows(log_rows, value_input_option="USER_ENTERED")
         except Exception as e:  # 網路、權限、配額錯誤等
@@ -96,3 +102,14 @@ class SheetsWriter:
         if self.pending_path.exists():
             self.pending_path.unlink()
         return True
+
+    def write(self, timestamp: str, counts: dict[str, int], raw_counts: dict[str, int]) -> bool:
+        """單機模式：一個鏡頭、多個區域。"""
+        current_rows = [[name, counts[name], raw_counts.get(name, 0), timestamp] for name in counts]
+        current_rows.append(["合計", sum(counts.values()), sum(raw_counts.values()), timestamp])
+
+        log_rows = []
+        if not (self.cfg.get("log_only_on_change") and counts == self._last_logged):
+            log_rows = [[timestamp, name, counts[name], raw_counts.get(name, 0)] for name in counts]
+            self._last_logged = dict(counts)
+        return self.write_rows(current_rows, log_rows)

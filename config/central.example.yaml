@@ -1,0 +1,66 @@
+# 中央伺服器設定（NVIDIA Jetson Orin Nano）
+# 複製成 config/central.yaml 後修改。
+# 試點階段先放 2 台鏡頭；擴充到 27 台時，照格式在 cameras 下繼續新增即可。
+
+server:
+  host: 0.0.0.0
+  port: 8000
+  token: "請改成一組長的隨機字串"   # 產生方式：python3 -c "import secrets; print(secrets.token_urlsafe(24))"
+  max_upload_mb: 10
+
+detector:
+  type: yolo
+  model_path: models/boxes.engine   # Jetson 建議用 TensorRT；尚未匯出時可先用 models/boxes.pt
+  confidence: 0.45
+  iou: 0.5
+  imgsz: 640
+  device: 0                         # 0 = Jetson GPU
+
+schedule:
+  interval_seconds: 60
+  process_offset_seconds: 20        # 節點 :00 拍照，中央 :20 統一辨識（留時間給上傳）
+  stale_seconds: 150                # 超過 2.5 分鐘沒收到照片 → 狀態顯示「離線」
+  smoothing_window: 3
+
+# 每台鏡頭的地板區域：
+#   1. 節點上線後，到 data/cameras/<id>/latest_raw.jpg 取得原始畫面
+#   2. python tools/calibrate_roi.py --image data/cameras/cam01/latest_raw.jpg
+#   3. 把輸出的 zones 貼到對應鏡頭底下
+cameras:
+  - id: cam01
+    name: 試點一號（A排）
+    zone_anchor: center
+    zones:
+      - name: A1
+        layers: 1
+        polygon: [[100, 150], [1540, 150], [1540, 1100], [100, 1100]]
+
+  - id: cam02
+    name: 試點二號（B排）
+    zone_anchor: center
+    zones:
+      - name: B1
+        layers: 1
+        polygon: [[100, 150], [1540, 150], [1540, 1100], [100, 1100]]
+
+  # 擴充範例：
+  # - id: cam03
+  #   name: C排
+  #   zones:
+  #     - name: C1
+  #       polygon: [[...], [...], [...]]
+
+google_sheets:
+  enabled: true
+  credentials_file: credentials/service_account.json
+  spreadsheet_id: "請貼上試算表 ID"
+  current_worksheet: 即時庫存
+  log_worksheet: 掃描紀錄
+  log_only_on_change: true          # 27 台時建議開啟，只在箱數變化時記錄，避免紀錄表過大
+  pending_file: data/pending_rows.jsonl
+  timezone: Asia/Taipei
+
+debug:
+  save_images: true                 # 儲存 data/cameras/<id>/latest.jpg（標註）與 latest_raw.jpg（原始）
+  image_dir: data/cameras
+  log_level: INFO

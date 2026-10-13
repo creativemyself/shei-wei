@@ -1,0 +1,20 @@
+# 鏡頭節點設定（Raspberry Pi Zero 2 W + IMX219）
+# 複製成 config/node.yaml；每台節點只需修改 camera_id。
+# 也可以用 deploy/setup_node.sh 自動產生。
+
+node:
+  camera_id: cam01                      # 必須與中央 central.yaml 的 cameras[].id 相同
+  central_url: http://192.168.1.10:8000 # 中央 Jetson 的 IP（建議在路由器設定固定 IP）
+  token: "請改成一組長的隨機字串"         # 與中央 server.token 相同
+  interval_seconds: 60                  # 每分鐘整點（:00）拍照
+  jpeg_quality: 85                      # 1640x1232 約 150～300 KB / 張
+  timeout_seconds: 15
+  retries: 3
+  log_level: INFO
+
+camera:
+  backend: picamera2
+  width: 1640
+  height: 1232
+  sensor_id: 0
+  warmup_frames: 3

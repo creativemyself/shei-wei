@@ -6,7 +6,12 @@
       "type": "debugpy",
       "request": "launch",
       "module": "inventory_vision",
-      "args": ["-c", "config/config.yaml", "--once", "--dry-run"],
+      "args": [
+        "-c",
+        "config/config.yaml",
+        "--once",
+        "--dry-run"
+      ],
       "cwd": "${workspaceFolder}",
       "console": "integratedTerminal"
     },
@@ -15,7 +20,10 @@
       "type": "debugpy",
       "request": "launch",
       "module": "inventory_vision",
-      "args": ["-c", "config/config.yaml"],
+      "args": [
+        "-c",
+        "config/config.yaml"
+      ],
       "cwd": "${workspaceFolder}",
       "console": "integratedTerminal"
     },
@@ -24,7 +32,36 @@
       "type": "debugpy",
       "request": "launch",
       "program": "${workspaceFolder}/tools/calibrate_roi.py",
-      "args": ["-c", "config/config.yaml"],
+      "args": [
+        "-c",
+        "config/config.yaml"
+      ],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "多鏡頭：中央伺服器（不寫入試算表）",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "inventory_vision.central",
+      "args": [
+        "-c",
+        "config/central.yaml",
+        "--dry-run"
+      ],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "多鏡頭：節點拍一張上傳",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "inventory_vision.node",
+      "args": [
+        "-c",
+        "config/node.yaml",
+        "--once"
+      ],
       "cwd": "${workspaceFolder}",
       "console": "integratedTerminal"
     }

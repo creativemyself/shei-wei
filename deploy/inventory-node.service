@@ -1,0 +1,17 @@
+# 鏡頭節點（Pi Zero 2 W）開機自動執行；由 deploy/setup_node.sh 自動安裝
+[Unit]
+Description=Inventory camera node (capture and upload to central)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=__USER__
+WorkingDirectory=__DIR__
+ExecStart=/usr/bin/python3 -m inventory_vision.node -c config/node.yaml
+Restart=always
+RestartSec=10
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target

@@ -18,13 +18,23 @@ inventory_vision/
   detector.py   偵測器：YOLO（正式用）、輪廓偵測（不需訓練，初期測試用）
   zones.py      地板區域判斷、各區計數、平滑化
   sheets.py     Google 試算表寫入 + 斷網暫存補傳
+  node.py       多鏡頭：節點程式（Pi Zero 2 W 拍照上傳）
+  central.py    多鏡頭：中央程式（Jetson 收照片、集中辨識、批次寫入試算表）
+  timing.py     對齊時鐘的每分鐘排程
   config.py     設定檔讀取
 tools/
   calibrate_roi.py   在畫面上點選地板區域
   collect_images.py  定時拍照收集訓練資料
   train_yolo.py      訓練 / 匯出 YOLO 模型（TensorRT、NCNN）
-config/config.example.yaml   設定檔範例（中文註解）
-deploy/inventory-vision.service   開機自動執行（systemd）
+config/config.example.yaml    單機版設定檔範例（中文註解）
+config/node.example.yaml      多鏡頭：節點設定範例
+config/central.example.yaml   多鏡頭：中央設定範例（試點 2 台）
+deploy/inventory-vision.service   單機版開機自動執行（systemd）
+deploy/setup_node.sh              多鏡頭：節點一鍵安裝
+deploy/inventory-node.service     多鏡頭：節點服務
+deploy/inventory-central.service  多鏡頭：中央服務
+docs/wiring.png        單機接線圖
+docs/multi-camera.png  多鏡頭架構圖
 .vscode/            VS Code 執行/除錯設定
 tests/              單元測試
 ```
@@ -201,6 +211,80 @@ journalctl -u inventory-vision -f      # 查看即時紀錄
 - 箱子緊密相鄰時，俯拍 + YOLO 的效果比輪廓偵測好很多。
 - 夜間無照明時可考慮補光燈，或在 IMX219 NoIR 版本搭配紅外線燈。
 
+## 9. 多鏡頭部署（Pi Zero 2 W 節點 × N + Jetson 中央）
+
+![多鏡頭架構圖](docs/multi-camera.png)
+
+每個鏡頭配一台 Raspberry Pi Zero 2 W，只負責**每分鐘 :00 拍照上傳**；
+中央 Jetson Orin Nano 在 **:20 集中辨識全部鏡頭**，並**一次批次寫入** Google 試算表
+（27 台也只用 3 個 API 請求 / 分鐘，不會超過配額）。節點與 Jetson 都接在同一台 PoE 交換器上。
+
+建議**先用 cam01、cam02 兩台試點**，準確率穩定後再擴充到 27 台（只要加節點與設定，不用改程式）。
+
+### 9-1. 中央（Jetson）
+
+```bash
+cd ~/shei-wei
+python3 -m venv --system-site-packages .venv && .venv/bin/pip install -r requirements.txt
+cp config/central.example.yaml config/central.yaml
+python3 -c "import secrets; print(secrets.token_urlsafe(24))"   # 產生 token，填入 server.token
+.venv/bin/python -m inventory_vision.central -c config/central.yaml --dry-run   # 先不寫試算表測試
+```
+
+- 在路由器把 Jetson 設成**固定 IP**（例如 192.168.1.10），節點才找得到它。
+- 確認無誤後安裝開機自動執行：見 `deploy/inventory-central.service` 檔頭說明。
+
+### 9-2. 節點（每台 Pi Zero 2 W）
+
+1. 用 Raspberry Pi Imager 燒錄 **Raspberry Pi OS Lite (64-bit)**，在設定中開啟 SSH，主機名稱設為 `cam01`、`cam02`…
+2. 接好 IMX219（Pi Zero 需用 **22pin → 15pin 的 Zero 專用排線**）與 PoE 分離器。
+3. SSH 進入節點：
+   ```bash
+   sudo apt install -y git
+   git clone <此儲存庫網址> ~/shei-wei && cd ~/shei-wei
+   bash deploy/setup_node.sh cam01 http://192.168.1.10:8000 <token>
+   ```
+   腳本會安裝套件、產生 `config/node.yaml`、拍一張測試上傳，並設定開機自動執行。
+
+節點不需要安裝 YOLO，全部使用系統套件，Pi Zero 2 W 的 512MB 記憶體就夠用。
+
+### 9-3. 設定每台鏡頭的地板區域
+
+節點上線後，中央會把每台的最新畫面存在 `data/cameras/<鏡頭>/latest_raw.jpg`：
+
+```bash
+python tools/calibrate_roi.py --image data/cameras/cam01/latest_raw.jpg
+```
+
+把輸出的 `zones` 貼到 `config/central.yaml` 對應鏡頭底下，重新啟動中央即可。
+
+### 9-4. 檢查狀態（手機或電腦瀏覽器，需在同一區網）
+
+- 各鏡頭狀態與箱數：`http://192.168.1.10:8000/status?token=<token>`
+- 某台鏡頭的標註畫面：`http://192.168.1.10:8000/image/cam01?token=<token>`
+
+### 9-5. 試算表格式
+
+**即時庫存**
+
+| 鏡頭 | 位置 | 區域 | 箱數 | 原始偵測數 | 狀態 | 照片時間 | 更新時間 |
+|------|------|------|------|-----------|------|---------|---------|
+| cam01 | 試點一號（A排） | A1 | 24 | 24 | 正常 | … | … |
+| cam02 | 試點二號（B排） | B1 | 18 | 18 | 離線 | … | … |
+| 合計 | | | 42 | | 1/2 台正常 | | … |
+
+- **狀態**：正常 / 離線（超過 2.5 分鐘沒收到照片，保留最後箱數）/ 未連線 / 錯誤
+- **掃描紀錄**：時間、鏡頭、位置、區域、箱數、原始偵測數；離線鏡頭不寫紀錄。
+  27 台時建議 `log_only_on_change: true`，只記錄有變化的區域。
+
+### 9-6. 擴充到 27 台
+
+1. 把交換器換成 ≥ 32 埠、PoE 總功率 ≥ 120W 的機型。
+2. 每台新節點執行 `setup_node.sh camNN ...`。
+3. 在 `config/central.yaml` 的 `cameras` 新增一筆（id、name、zones），重新啟動中央。
+
+---
+
 ## 疑難排解
 
 | 問題 | 解法 |
@@ -208,4 +292,6 @@ journalctl -u inventory-vision -f      # 查看即時紀錄
 | Jetson「無法開啟攝影機」 | 確認使用 JetPack 內建 OpenCV（`python3 -c "import cv2; print(cv2.getBuildInformation())"` 中 GStreamer 為 YES）；`sudo systemctl restart nvargus-daemon` |
 | 樹莓派找不到鏡頭 | `rpicam-hello --list-cameras`；檢查排線方向；Pi 5 需使用 22pin 轉接排線 |
 | 試算表 403 / PERMISSION_DENIED | 試算表沒有共用給服務帳戶 email，或未啟用 Sheets/Drive API |
+| 試算表顯示「未連線」 | 在節點執行 `journalctl -u inventory-node -f` 看上傳錯誤；確認中央 IP、token、防火牆 8000 埠 |
+| 多台同時「離線」 | 檢查 PoE 交換器電源與總功率；`/status` 頁面可看各台最後照片時間 |
 | 數字一直是 0 | 查看 `data/latest.jpg`：藍色框為區域、綠色框為偵測結果，確認區域座標與鏡頭解析度一致 |

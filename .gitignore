@@ -6,6 +6,8 @@ venv/
 
 # 本機設定與機密（請勿提交）
 config/config.yaml
+config/node.yaml
+config/central.yaml
 credentials/*
 !credentials/.gitkeep
 

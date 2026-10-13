@@ -1,0 +1,149 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 940" width="1400" height="940"
+     font-family="'PingFang TC','Noto Sans CJK TC','Microsoft JhengHei','WenQuanYi Zen Hei',sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#444"/>
+    </marker>
+    <style>
+      .panel { fill:#fafafa; stroke:#cfcfcf; stroke-width:1.5; }
+      .h2 { font-size:22px; font-weight:700; fill:#222; }
+      .t { font-size:15px; fill:#333; }
+      .s { font-size:13px; fill:#555; }
+      .w { font-size:15px; fill:#fff; font-weight:700; }
+      .ws { font-size:12px; fill:#e8f5ee; }
+      .ribbon { fill:none; stroke:#d9a441; stroke-width:8; }
+      .power { fill:none; stroke:#c0392b; stroke-width:3; }
+      .net { fill:none; stroke:#2471a3; stroke-width:3; }
+      .poe { fill:none; stroke:#7d3c98; stroke-width:5; }
+      .box { fill:#fff; stroke:#888; stroke-width:1.5; }
+      .tag { font-size:12px; font-weight:700; }
+    </style>
+  </defs>
+
+  <rect width="1400" height="940" fill="#fff"/>
+  <text x="700" y="46" text-anchor="middle" font-size="30" font-weight="700" fill="#111">多鏡頭架構（試點 2 台 → 擴充 27 台）</text>
+  <g transform="translate(860,72)">
+    <line x1="0" y1="0" x2="30" y2="0" stroke="#d9a441" stroke-width="8"/><text x="38" y="5" class="s">CSI 排線</text>
+    <line x1="115" y1="0" x2="145" y2="0" class="poe"/><text x="153" y="5" class="s">PoE（供電＋網路）</text>
+    <line x1="290" y1="0" x2="320" y2="0" class="power"/><text x="328" y="5" class="s">電源</text>
+    <line x1="380" y1="0" x2="410" y2="0" class="net"/><text x="418" y="5" class="s">網路</text>
+  </g>
+
+  <rect class="panel" x="30" y="95" width="1340" height="485" rx="12"/>
+
+  <!-- ── 節點 ── -->
+  <g id="node1">
+    <text class="tag" x="50" y="128" fill="#1e8449">試點 ①</text>
+    <rect x="50" y="140" width="80" height="70" rx="5" fill="#1f7a4d"/><circle cx="90" cy="168" r="17" fill="#222"/><circle cx="90" cy="168" r="8" fill="#3d5a80"/>
+    <text class="s" x="90" y="228" text-anchor="middle">IMX219</text>
+    <path class="ribbon" d="M130,175 H180"/>
+    <rect x="180" y="145" width="160" height="60" rx="6" fill="#2e8b57"/>
+    <text class="w" x="260" y="171" text-anchor="middle">Pi Zero 2 W</text>
+    <text class="ws" x="260" y="191" text-anchor="middle">cam01・拍照上傳</text>
+    <path class="power" d="M340,166 H390"/><path class="net" d="M340,184 H390"/>
+    <rect class="box" x="390" y="145" width="140" height="60" rx="6"/>
+    <text class="t" x="460" y="171" text-anchor="middle">PoE 分離器</text>
+    <text class="s" x="460" y="191" text-anchor="middle">5V + 網路</text>
+    <path class="poe" d="M530,175 H640"/>
+  </g>
+  <g transform="translate(0,130)">
+    <text class="tag" x="50" y="128" fill="#1e8449">試點 ②</text>
+    <rect x="50" y="140" width="80" height="70" rx="5" fill="#1f7a4d"/><circle cx="90" cy="168" r="17" fill="#222"/><circle cx="90" cy="168" r="8" fill="#3d5a80"/>
+    <text class="s" x="90" y="228" text-anchor="middle">IMX219</text>
+    <path class="ribbon" d="M130,175 H180"/>
+    <rect x="180" y="145" width="160" height="60" rx="6" fill="#2e8b57"/>
+    <text class="w" x="260" y="171" text-anchor="middle">Pi Zero 2 W</text>
+    <text class="ws" x="260" y="191" text-anchor="middle">cam02・拍照上傳</text>
+    <path class="power" d="M340,166 H390"/><path class="net" d="M340,184 H390"/>
+    <rect class="box" x="390" y="145" width="140" height="60" rx="6"/>
+    <text class="t" x="460" y="171" text-anchor="middle">PoE 分離器</text>
+    <text class="s" x="460" y="191" text-anchor="middle">5V + 網路</text>
+    <path class="poe" d="M530,175 H640"/>
+  </g>
+  <text x="290" y="400" text-anchor="middle" font-size="26" fill="#999">⋮</text>
+  <text class="s" x="330" y="398">cam03 ～ cam26（擴充時照同樣方式增加）</text>
+  <g transform="translate(0,300)" opacity="0.55">
+    <text class="tag" x="50" y="128" fill="#7f8c8d">擴充 ㉗</text>
+    <rect x="50" y="140" width="80" height="70" rx="5" fill="#1f7a4d" stroke="#555" stroke-dasharray="5 4"/><circle cx="90" cy="168" r="17" fill="#222"/><circle cx="90" cy="168" r="8" fill="#3d5a80"/>
+    <text class="s" x="90" y="228" text-anchor="middle">IMX219</text>
+    <path class="ribbon" d="M130,175 H180"/>
+    <rect x="180" y="145" width="160" height="60" rx="6" fill="#2e8b57" stroke="#555" stroke-dasharray="5 4"/>
+    <text class="w" x="260" y="171" text-anchor="middle">Pi Zero 2 W</text>
+    <text class="ws" x="260" y="191" text-anchor="middle">cam27・拍照上傳</text>
+    <path class="power" d="M340,166 H390"/><path class="net" d="M340,184 H390"/>
+    <rect class="box" x="390" y="145" width="140" height="60" rx="6" stroke-dasharray="5 4"/>
+    <text class="t" x="460" y="171" text-anchor="middle">PoE 分離器</text>
+    <text class="s" x="460" y="191" text-anchor="middle">5V + 網路</text>
+    <path class="poe" d="M530,175 H640" stroke-dasharray="8 6"/>
+  </g>
+
+  <!-- ── PoE 交換器 ── -->
+  <rect x="640" y="125" width="150" height="420" rx="8" fill="#4a235a"/>
+  <text class="w" x="715" y="300" text-anchor="middle">PoE 交換器</text>
+  <text class="ws" x="715" y="324" text-anchor="middle">802.3af</text>
+  <text class="ws" x="715" y="344" text-anchor="middle">試點：8 埠即可</text>
+  <text class="ws" x="715" y="364" text-anchor="middle">27 台：≥ 32 埠</text>
+  <text class="ws" x="715" y="384" text-anchor="middle">PoE 預算 ≥ 120W</text>
+
+  <!-- ── 中央 ── -->
+  <path class="net" d="M790,215 H880"/>
+  <rect x="880" y="160" width="230" height="120" rx="10" fill="#3a3f44"/>
+  <text class="w" x="995" y="196" text-anchor="middle">Jetson Orin Nano（中央）</text>
+  <text class="ws" x="995" y="220" text-anchor="middle">收照片（HTTP :8000）</text>
+  <text class="ws" x="995" y="240" text-anchor="middle">每分鐘 :20 YOLO 辨識全部鏡頭</text>
+  <text class="ws" x="995" y="260" text-anchor="middle">一次批次寫入試算表</text>
+  <path class="power" d="M1110,220 H1170"/>
+  <rect class="box" x="1170" y="195" width="170" height="50" rx="6"/>
+  <text class="t" x="1255" y="225" text-anchor="middle">DC 19V 電源</text>
+
+  <path class="net" d="M790,445 H880"/>
+  <rect class="box" x="880" y="415" width="230" height="60" rx="6"/>
+  <text class="t" x="995" y="442" text-anchor="middle">路由器</text>
+  <text class="s" x="995" y="462" text-anchor="middle">Jetson 設固定 IP（如 192.168.1.10）</text>
+  <line x1="1110" y1="445" x2="1168" y2="445" stroke="#444" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="1170" y="405" width="170" height="80" rx="40" fill="#e8f6ef" stroke="#2e7d5b" stroke-width="2"/>
+  <text class="t" x="1255" y="440" text-anchor="middle" font-weight="700">Google 試算表</text>
+  <text class="s" x="1255" y="462" text-anchor="middle">即時庫存＋掃描紀錄</text>
+  <line x1="1255" y1="485" x2="1255" y2="520" stroke="#444" stroke-width="2" marker-end="url(#arrow)"/>
+  <text class="t" x="1255" y="545" text-anchor="middle">手機 / 電腦查看</text>
+
+  <!-- ── 下方說明 ── -->
+  <rect class="panel" x="30" y="600" width="430" height="315" rx="12"/>
+  <text class="h2" x="50" y="636">每個節點的材料</text>
+  <text class="t" x="50" y="670">• Raspberry Pi Zero 2 W</text>
+  <text class="t" x="50" y="698">• IMX219 鏡頭模組</text>
+  <text class="t" x="50" y="726">• Zero 專用相機排線（22pin → 15pin）</text>
+  <text class="t" x="50" y="754">• PoE 分離器（micro-USB 5V 輸出）</text>
+  <text class="t" x="50" y="782">　＋ micro-USB 網路卡</text>
+  <text class="s" x="50" y="806">　（或 Zero 專用 PoE 乙太網路擴充板，二擇一）</text>
+  <text class="t" x="50" y="834">• microSD 16GB（Raspberry Pi OS Lite 64-bit）</text>
+  <text class="t" x="50" y="862">• 網路線（交換器 → 節點，≤ 100 m）</text>
+  <text class="s" x="50" y="892">每節點耗電約 2～3W，27 台約 80W</text>
+
+  <rect class="panel" x="485" y="600" width="430" height="315" rx="12"/>
+  <text class="h2" x="505" y="636">每分鐘的時間軸</text>
+  <line x1="525" y1="700" x2="895" y2="700" stroke="#888" stroke-width="2"/>
+  <circle cx="545" cy="700" r="8" fill="#2e8b57"/><text class="t" x="545" y="680" text-anchor="middle">:00</text>
+  <text class="s" x="545" y="728" text-anchor="middle">全部節點</text><text class="s" x="545" y="746" text-anchor="middle">同時拍照</text>
+  <circle cx="660" cy="700" r="8" fill="#7d3c98"/><text class="t" x="660" y="680" text-anchor="middle">:00～:15</text>
+  <text class="s" x="660" y="728" text-anchor="middle">上傳照片</text><text class="s" x="660" y="746" text-anchor="middle">（失敗重試）</text>
+  <circle cx="775" cy="700" r="8" fill="#3a3f44"/><text class="t" x="775" y="680" text-anchor="middle">:20</text>
+  <text class="s" x="775" y="728" text-anchor="middle">中央辨識</text><text class="s" x="775" y="746" text-anchor="middle">寫入試算表</text>
+  <circle cx="875" cy="700" r="8" fill="#aaa"/><text class="t" x="875" y="680" text-anchor="middle">:60</text>
+  <text class="s" x="875" y="728" text-anchor="middle">下一輪</text>
+  <text class="s" x="505" y="800">• 超過 2.5 分鐘沒收到照片 → 試算表顯示「離線」</text>
+  <text class="s" x="505" y="824">　並保留最後一次的箱數</text>
+  <text class="s" x="505" y="852">• 試算表每分鐘只寫 1 次（3 個請求），</text>
+  <text class="s" x="505" y="876">　27 台也不會超過 Google API 配額</text>
+
+  <rect class="panel" x="940" y="600" width="430" height="315" rx="12"/>
+  <text class="h2" x="960" y="636">試點 → 擴充步驟</text>
+  <text class="t" x="960" y="670">1. 架好 Jetson、交換器、cam01、cam02</text>
+  <text class="t" x="960" y="700">2. 收集照片 → 訓練 YOLO 模型</text>
+  <text class="t" x="960" y="730">3. 每天比對試算表與人工盤點</text>
+  <text class="t" x="960" y="760">4. 準確率穩定（例如連續 2 週</text>
+  <text class="t" x="960" y="784">　誤差 ≤ 2%）再擴充</text>
+  <text class="t" x="960" y="814">5. 新增節點：執行 setup_node.sh</text>
+  <text class="t" x="960" y="838">　並在 central.yaml 加一筆鏡頭</text>
+  <text class="t" x="960" y="868">6. 換交換器到 ≥ 32 埠</text>
+</svg>

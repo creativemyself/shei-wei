@@ -1,0 +1,21 @@
+# 中央伺服器（Jetson）開機自動執行
+# 安裝（將 __USER__ / __DIR__ 換成實際使用者與專案路徑）：
+#   sed -e "s|__USER__|$(id -un)|g" -e "s|__DIR__|$(pwd)|g" deploy/inventory-central.service \
+#     | sudo tee /etc/systemd/system/inventory-central.service
+#   sudo systemctl daemon-reload && sudo systemctl enable --now inventory-central
+[Unit]
+Description=Inventory central server (receive photos, detect boxes, update Google Sheets)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=__USER__
+WorkingDirectory=__DIR__
+ExecStart=__DIR__/.venv/bin/python -m inventory_vision.central -c config/central.yaml
+Restart=always
+RestartSec=10
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target
