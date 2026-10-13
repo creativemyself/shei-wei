@@ -1,0 +1,157 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 940" width="1400" height="940"
+     font-family="'PingFang TC','Noto Sans CJK TC','Microsoft JhengHei','WenQuanYi Zen Hei',sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#444"/>
+    </marker>
+    <style>
+      .panel { fill:#fafafa; stroke:#cfcfcf; stroke-width:1.5; }
+      .h2 { font-size:21px; font-weight:700; fill:#222; }
+      .t { font-size:15px; fill:#333; }
+      .s { font-size:13px; fill:#555; }
+      .w { font-size:15px; fill:#fff; font-weight:700; }
+      .ws { font-size:12px; fill:#f0f0f0; }
+      .ribbon { fill:none; stroke:#d9a441; stroke-width:9; stroke-linejoin:round; }
+      .poe { fill:none; stroke:#7d3c98; stroke-width:5; stroke-linejoin:round; }
+      .net { fill:none; stroke:#2471a3; stroke-width:4; stroke-linejoin:round; }
+      .power { fill:none; stroke:#c0392b; stroke-width:3; }
+      .box { fill:#fff; stroke:#888; stroke-width:1.5; }
+      .port { fill:#222; stroke:#999; }
+      .th { font-size:14px; font-weight:700; fill:#fff; }
+      .td { font-size:13.5px; fill:#333; }
+    </style>
+  </defs>
+
+  <rect width="1400" height="940" fill="#fff"/>
+  <text x="700" y="44" text-anchor="middle" font-size="29" font-weight="700" fill="#111">試點接線圖：2 組鏡頭（cam01、cam02）＋ Jetson 中央</text>
+  <g transform="translate(830,72)">
+    <line x1="0" y1="0" x2="30" y2="0" stroke="#d9a441" stroke-width="8"/><text x="38" y="5" class="s">CSI 排線</text>
+    <line x1="115" y1="0" x2="145" y2="0" class="poe"/><text x="153" y="5" class="s">Cat6（PoE 供電＋網路）</text>
+    <line x1="320" y1="0" x2="350" y2="0" class="net"/><text x="358" y="5" class="s">Cat6 網路</text>
+    <line x1="440" y1="0" x2="470" y2="0" class="power"/><text x="478" y="5" class="s">電源</text>
+  </g>
+
+  <rect class="panel" x="30" y="92" width="1340" height="500" rx="12"/>
+
+  <!-- ── 節點 cam01 ── -->
+  <g>
+    <text x="50" y="124" font-size="17" font-weight="700" fill="#1e8449">節點 cam01（天花板）</text>
+    <rect x="50" y="140" width="100" height="95" rx="5" fill="#1f7a4d"/>
+    <circle cx="100" cy="178" r="22" fill="#222"/><circle cx="100" cy="178" r="10" fill="#3d5a80"/>
+    <rect x="75" y="226" width="50" height="10" fill="#e9dcc0"/>
+    <text class="s" x="100" y="272" text-anchor="middle">Camera Module V2</text>
+    <text class="s" x="100" y="288" text-anchor="middle">IMX219（15pin）</text>
+    <path class="ribbon" d="M100,236 V248 H190 V176 H232"/>
+    
+    <rect x="232" y="146" width="220" height="62" rx="6" fill="#2e8b57"/>
+    <rect x="232" y="168" width="10" height="18" fill="#e9dcc0"/>
+    <text class="w" x="345" y="172" text-anchor="middle">Pi Zero 2 W</text>
+    <text class="ws" x="345" y="192" text-anchor="middle">microSD 32GB・hostname cam01</text>
+    <rect x="232" y="212" width="220" height="48" rx="6" fill="#6c3483"/>
+    <text class="w" x="330" y="234" text-anchor="middle" font-size="13">PoE / ETH / USB HUB HAT</text>
+    <text class="ws" x="330" y="251" text-anchor="middle">鎖在 Zero 下方（彈簧針接觸）</text>
+    <rect x="452" y="220" width="30" height="30" class="port"/>
+    <text class="s" x="467" y="275" text-anchor="middle">RJ45</text>
+  </g>
+
+  <!-- ── 節點 cam02 ── -->
+  <g transform="translate(0,215)">
+    <text x="50" y="124" font-size="17" font-weight="700" fill="#1e8449">節點 cam02（天花板）</text>
+    <rect x="50" y="140" width="100" height="95" rx="5" fill="#1f7a4d"/>
+    <circle cx="100" cy="178" r="22" fill="#222"/><circle cx="100" cy="178" r="10" fill="#3d5a80"/>
+    <rect x="75" y="226" width="50" height="10" fill="#e9dcc0"/>
+    <text class="s" x="100" y="272" text-anchor="middle">Camera Module V2</text>
+    <text class="s" x="100" y="288" text-anchor="middle">IMX219（15pin）</text>
+    <path class="ribbon" d="M100,236 V248 H190 V176 H232"/>
+    
+    <rect x="232" y="146" width="220" height="62" rx="6" fill="#2e8b57"/>
+    <rect x="232" y="168" width="10" height="18" fill="#e9dcc0"/>
+    <text class="w" x="345" y="172" text-anchor="middle">Pi Zero 2 W</text>
+    <text class="ws" x="345" y="192" text-anchor="middle">microSD 32GB・hostname cam02</text>
+    <rect x="232" y="212" width="220" height="48" rx="6" fill="#6c3483"/>
+    <text class="w" x="330" y="234" text-anchor="middle" font-size="13">PoE / ETH / USB HUB HAT</text>
+    <text class="ws" x="330" y="251" text-anchor="middle">鎖在 Zero 下方（彈簧針接觸）</text>
+    <rect x="452" y="220" width="30" height="30" class="port"/>
+    <text class="s" x="467" y="275" text-anchor="middle">RJ45</text>
+  </g>
+
+  <!-- ── PoE 交換器（直立示意，左側 8 埠）── -->
+  <rect x="640" y="125" width="190" height="400" rx="8" fill="#34495e"/>
+  <text class="w" x="772" y="300" text-anchor="middle">PoE 交換器</text>
+  <text class="ws" x="772" y="320" text-anchor="middle">TL-SG1008P</text>
+  <text class="ws" x="772" y="338" text-anchor="middle">8 埠・4 埠 PoE+</text>
+  <text class="ws" x="772" y="356" text-anchor="middle">PoE 總功率 64W</text>
+  <g font-size="12" font-weight="700">
+    <rect x="640" y="140" width="30" height="24" class="port"/><text x="680" y="157" fill="#f5b041">1 PoE</text>
+    <rect x="640" y="185" width="30" height="24" class="port"/><text x="680" y="202" fill="#f5b041">2 PoE</text>
+    <rect x="640" y="230" width="30" height="24" class="port"/><text x="680" y="247" fill="#f5b041">3 PoE</text>
+    <rect x="640" y="275" width="30" height="24" class="port"/>
+    <rect x="640" y="380" width="30" height="24" class="port"/><text x="680" y="397" fill="#ddd">5</text>
+    <rect x="640" y="425" width="30" height="24" class="port"/><text x="680" y="442" fill="#ddd">6</text>
+    <rect x="640" y="470" width="30" height="24" class="port"/><text x="680" y="487" fill="#ddd">8</text>
+  </g>
+  <text x="680" y="292" style="fill:#f5b041;font-size:12px;font-weight:700">4 PoE</text>
+
+  <!-- 節點 → 交換器 -->
+  <path class="poe" d="M482,235 H560 V152 H640"/>
+  <path class="poe" d="M482,450 H590 V197 H640"/>
+  
+
+  <!-- 交換器電源 -->
+  <path class="power" d="M735,525 V555"/>
+  <rect class="box" x="660" y="555" width="150" height="30" rx="5"/>
+  <text class="s" x="735" y="575" text-anchor="middle">交換器變壓器（附）</text>
+
+  <!-- ── Jetson ── -->
+  <path class="net" d="M830,392 H880"/>
+  <text class="s" x="840" y="384">埠5</text>
+  <rect x="880" y="320" width="250" height="135" rx="10" fill="#3a3f44"/>
+  <text class="w" x="1005" y="352" text-anchor="middle">Jetson Orin Nano Super</text>
+  <text class="ws" x="1005" y="376" text-anchor="middle">固定 IP 192.168.1.10</text>
+  <text class="ws" x="1005" y="396" text-anchor="middle">microSD 64GB（JetPack）</text>
+  <text class="ws" x="1005" y="416" text-anchor="middle">中央程式：收照片＋YOLO 辨識</text>
+  <text class="ws" x="1005" y="436" text-anchor="middle">不需接鏡頭</text>
+  <path class="power" d="M1130,388 H1180"/>
+  <rect class="box" x="1180" y="365" width="170" height="46" rx="6"/>
+  <text class="t" x="1265" y="386" text-anchor="middle">19V 變壓器（附）</text>
+  <text class="s" x="1265" y="403" text-anchor="middle">DC 圓孔</text>
+
+  <!-- ── 路由器 / 雲端 ── -->
+  <path class="net" d="M830,482 H880"/>
+  <text class="s" x="840" y="474">埠8</text>
+  <rect class="box" x="880" y="470" width="250" height="56" rx="6"/>
+  <text class="t" x="1005" y="494" text-anchor="middle">既有路由器（連網際網路）</text>
+  <text class="s" x="1005" y="513" text-anchor="middle">設定 Jetson 固定 IP</text>
+  <line x1="1130" y1="498" x2="1178" y2="498" stroke="#444" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="1180" y="465" width="170" height="66" rx="33" fill="#e8f6ef" stroke="#2e7d5b" stroke-width="2"/>
+  <text class="t" x="1265" y="494" text-anchor="middle" font-weight="700">Google 試算表</text>
+  <text class="s" x="1265" y="514" text-anchor="middle">每分鐘更新</text>
+
+  <!-- 安裝提醒 -->
+  <rect x="880" y="130" width="470" height="160" rx="8" fill="#fff8e6" stroke="#e0b252"/>
+  <text class="t" x="900" y="158" font-weight="700">安裝提醒</text>
+  <text class="s" x="900" y="184">1. 先斷電再插拔 CSI 排線；卡扣掀起 → 插入 → 壓下</text>
+  <text class="s" x="900" y="208">2. 排線寬頭（15pin）接鏡頭，窄頭（22pin）接 Pi Zero</text>
+  <text class="s" x="900" y="232">3. 節點接 PoE 埠 1～4（供電）；Jetson、路由器接 5～8</text>
+  <text class="s" x="900" y="256">4. 鏡頭裝在地板正上方 3～5 m，朝正下方</text>
+  <text class="s" x="900" y="280">5. 每台節點約 2.5W，試點 2 台遠低於 64W 上限</text>
+
+  <!-- ── 連接表 ── -->
+  <text class="h2" x="30" y="630">接線對照表</text>
+  <g transform="translate(30,645)">
+    <rect width="1340" height="34" fill="#34495e"/>
+    <text class="th" x="16" y="22">#</text>
+    <text class="th" x="56" y="22">從</text>
+    <text class="th" x="356" y="22">到</text>
+    <text class="th" x="676" y="22">線材</text>
+    <text class="th" x="966" y="22">備註</text>
+    <g class="td">
+      <rect y="34" width="1340" height="36" fill="#fff"/><text x="16" y="58">1</text><text x="56" y="58">cam01 鏡頭（15pin）</text><text x="356" y="58">cam01 Pi Zero 2 W CAM（22pin）</text><text x="676" y="58">22→15pin CSI 排線 30cm</text><text x="966" y="58">金屬接點方向依接頭標示</text>
+      <rect y="70" width="1340" height="36" fill="#f4f6f7"/><text x="16" y="94">2</text><text x="56" y="94">cam02 鏡頭（15pin）</text><text x="356" y="94">cam02 Pi Zero 2 W CAM（22pin）</text><text x="676" y="94">22→15pin CSI 排線 30cm</text><text x="966" y="94">同上</text>
+      <rect y="106" width="1340" height="36" fill="#fff"/><text x="16" y="130">3</text><text x="56" y="130">cam01 PoE HAT（RJ45）</text><text x="356" y="130">交換器 埠 1（PoE）</text><text x="676" y="130">Cat6 網路線（依天花板距離）</text><text x="966" y="130">同一條線供電＋傳資料</text>
+      <rect y="142" width="1340" height="36" fill="#f4f6f7"/><text x="16" y="166">4</text><text x="56" y="166">cam02 PoE HAT（RJ45）</text><text x="356" y="166">交換器 埠 2（PoE）</text><text x="676" y="166">Cat6 網路線（依天花板距離）</text><text x="966" y="166">同上</text>
+      <rect y="178" width="1340" height="36" fill="#fff"/><text x="16" y="202">5</text><text x="56" y="202">Jetson（RJ45）</text><text x="356" y="202">交換器 埠 5</text><text x="676" y="202">Cat6 網路線 1～2m</text><text x="966" y="202">Jetson 用 19V 變壓器供電</text>
+      <rect y="214" width="1340" height="36" fill="#f4f6f7"/><text x="16" y="238">6</text><text x="56" y="238">交換器 埠 8</text><text x="356" y="238">既有路由器 LAN 埠</text><text x="676" y="238">Cat6 網路線</text><text x="966" y="238">提供網際網路（寫試算表）</text>
+    </g>
+  </g>
+</svg>

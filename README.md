@@ -35,6 +35,7 @@ deploy/inventory-node.service     多鏡頭：節點服務
 deploy/inventory-central.service  多鏡頭：中央服務
 docs/wiring.png        單機接線圖
 docs/multi-camera.png  多鏡頭架構圖
+docs/pilot-wiring.png  試點 2 組鏡頭接線圖
 .vscode/            VS Code 執行/除錯設定
 tests/              單元測試
 ```
@@ -214,6 +215,10 @@ journalctl -u inventory-vision -f      # 查看即時紀錄
 ## 9. 多鏡頭部署（Pi Zero 2 W 節點 × N + Jetson 中央）
 
 ![多鏡頭架構圖](docs/multi-camera.png)
+
+試點（2 組鏡頭）的詳細接線與埠位對照：
+
+![試點接線圖](docs/pilot-wiring.png)
 
 每個鏡頭配一台 Raspberry Pi Zero 2 W，只負責**每分鐘 :00 拍照上傳**；
 中央 Jetson Orin Nano 在 **:20 集中辨識全部鏡頭**，並**一次批次寫入** Google 試算表
