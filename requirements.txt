@@ -1,9 +1,10 @@
 # 共用相依套件（樹莓派 / Jetson / 開發用電腦）
-numpy>=1.24
+numpy>=1.23
 opencv-python>=4.8; platform_machine != "aarch64"
 pyyaml>=6.0
 gspread>=6.0
 google-auth>=2.20
+tzdata  # 時區資料（Windows 或精簡系統需要）
 
 # YOLO 物件偵測（detector.type = yolo 時需要）
 ultralytics>=8.3

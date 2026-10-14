@@ -32,7 +32,9 @@ config/central.example.yaml   多鏡頭：中央設定範例（試點 2 台）
 deploy/inventory-vision.service   單機版開機自動執行（systemd）
 deploy/setup_node.sh              多鏡頭：節點一鍵安裝
 deploy/inventory-node.service     多鏡頭：節點服務
-deploy/inventory-central.service  多鏡頭：中央服務
+deploy/inventory-central.service  多鏡頭：中央服務（不用 Docker 時）
+deploy/setup_jetson.sh            多鏡頭：Jetson 中央一鍵安裝（Docker）
+deploy/jetson/Dockerfile          多鏡頭：中央程式的 Docker 映像
 docs/wiring.png        單機接線圖
 docs/multi-camera.png  多鏡頭架構圖
 docs/pilot-wiring.png  試點 2 組鏡頭接線圖
@@ -96,6 +98,7 @@ python3 -m venv --system-site-packages .venv
 
 > Jetson 上的 PyTorch 需安裝對應 JetPack 版本的 wheel，請參考
 > Ultralytics 官方的 NVIDIA Jetson 安裝指南。
+> 多鏡頭版的中央伺服器請改用 Docker 一鍵安裝（見第 9-1 節），不需手動安裝 PyTorch。
 
 ### 開發用電腦（Windows / macOS / Linux，用 VS Code 寫程式、跑測試）
 
@@ -226,18 +229,38 @@ journalctl -u inventory-vision -f      # 查看即時紀錄
 
 建議**先用 cam01、cam02 兩台試點**，準確率穩定後再擴充到 27 台（只要加節點與設定，不用改程式）。
 
-### 9-1. 中央（Jetson）
+### 9-1. 中央（Jetson Orin Nano）
+
+**步驟 1：燒錄 JetPack 6 系統（在 Mac 上做）**
+
+1. 到 NVIDIA 官網 JetPack 頁面下載 **Jetson Orin Nano Developer Kit SD Card Image**（JetPack 6.x）。
+2. 安裝 [balenaEtcher](https://etcher.balena.io/)，選擇下載的映像檔與 microSD（64GB 以上），按 Flash。
+3. microSD 插入 Jetson，接上 DisplayPort 螢幕、鍵盤、滑鼠、網路線，接電開機，依畫面完成初始設定（語言、帳號、時區選台北）。
+
+> 若開機後螢幕沒畫面或卡住，代表 Jetson 的韌體太舊，請依 NVIDIA 官方「Jetson Orin Nano Developer Kit 初始設定指南」先更新韌體。
+
+**步驟 2：下載程式並一鍵安裝（在 Jetson 上做）**
 
 ```bash
-cd ~/shei-wei
-python3 -m venv --system-site-packages .venv && .venv/bin/pip install -r requirements.txt
-cp config/central.example.yaml config/central.yaml
-python3 -c "import secrets; print(secrets.token_urlsafe(24))"   # 產生 token，填入 server.token
-.venv/bin/python -m inventory_vision.central -c config/central.yaml --dry-run   # 先不寫試算表測試
+sudo apt install -y git
+git clone -b claude/inventory-image-recognition-dm5sat https://github.com/creativemyself/shei-wei.git ~/AI庫存
+cd ~/AI庫存
+bash deploy/setup_jetson.sh
 ```
 
+腳本會：確認 JetPack 6 → 安裝 Docker → 建立 `config/central.yaml`（並顯示節點用的 token）
+→ 建立中央程式的 Docker 映像 → **確認 GPU 可用** → 啟動中央伺服器並設定開機自動執行。
+
+中央程式在 Ultralytics 官方的 Jetson Docker 映像中執行，裡面已裝好支援 GPU 的 PyTorch 與 TensorRT，
+不需要自己處理 Jetson 上 PyTorch 的版本相容問題。
+
+**步驟 3：放入模型與設定**
+
+- 模型：把訓練好的 `boxes.pt` 放到 `models/`，再執行 `bash deploy/setup_jetson.sh export` 轉成 TensorRT（加速）。
+  模型完成前可先把 `detector.type` 改成 `contour` 測試。
+- Google 試算表：把服務帳戶金鑰放到 `credentials/service_account.json`，在 `config/central.yaml` 填入試算表 ID。
+- 改完設定後：`sudo docker restart ai-inventory-central`；查看紀錄：`sudo docker logs -f ai-inventory-central`
 - 在路由器把 Jetson 設成**固定 IP**（例如 192.168.1.10），節點才找得到它。
-- 確認無誤後安裝開機自動執行：見 `deploy/inventory-central.service` 檔頭說明。
 
 ### 9-2. 節點（每台 Pi Zero 2 W）
 

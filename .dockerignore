@@ -1,0 +1,11 @@
+.git
+.venv
+venv
+data
+datasets
+runs
+models
+credentials
+config/*.yaml
+!config/*.example.yaml
+**/__pycache__
